@@ -16,11 +16,18 @@ from filters.models.ml_base import MLBase
 class FasterRCNN(nn.Module):
   def __init__(self):    
       super().__init__()
-  def _get_rois_blob(im_rois, im_scale_factors):
-      rois, levels = _project_im_rois(im_rois, im_scale_factors)
-      rois_blob = np.hstack((levels, rois))
-      return rois_blob.astype(np.float32, copy=False)
 
+  def image_to_blob(im):
+      original_image = im.astype(np.float32, copy=True)
+      im_shape = original_image.shape 
+      im_size_min = np.min(im_shape[0:2])
+      im_size_max = np.max(im_shape[0:2])
+      processed_ims = []
+      im_scale_factors = []      
+
+
+      return processed_ims, im_scale_factors
+  
   def bbox_transform(ex_rois, gt_rois):
       ex_widths = ex_rois[:, 2] - ex_rois[:, 0] + 1.0
       ex_heights = ex_rois[:, 3] - ex_rois[:, 1] + 1.0
