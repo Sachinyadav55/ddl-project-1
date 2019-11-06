@@ -11,7 +11,7 @@ from os import listdir
 from os.path import isfile, join
 import time
 
-#This is a program created to help with the image classification processs
+#This is a program created to help with the image classification process with a GUI using the PyQt module
 
 image = '00030.jpeg'
 global index
