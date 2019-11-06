@@ -11,7 +11,7 @@ from os import listdir
 from os.path import isfile, join
 import time
 
-
+#This is a program created to help with the image classification processs
 
 image = '00030.jpeg'
 global index
