@@ -16,7 +16,7 @@ from filters.models.ml_base import MLBase
 class FasterRCNN(nn.Module):
   def __init__(self):    
       super().__init__()
-
+  #image to blob function
   def image_to_blob(im):
       original_image = im.astype(np.float32, copy=True)
       im_shape = original_image.shape 
@@ -28,6 +28,7 @@ class FasterRCNN(nn.Module):
 
       return processed_ims, im_scale_factors
   
+  #bbox_transform function followed by inverse
   def bbox_transform(ex_rois, gt_rois):
       ex_widths = ex_rois[:, 2] - ex_rois[:, 0] + 1.0
       ex_heights = ex_rois[:, 3] - ex_rois[:, 1] + 1.0
