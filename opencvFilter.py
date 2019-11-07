@@ -13,7 +13,7 @@ import pandas as pd
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video", help="path to the video file")
-ap.add_argument("-a", "--min-area", type=int, default=300, help="minimum area size")
+ap.add_argument("-a", "--min-area", type=int, default=50, help="minimum area size")
 args = vars(ap.parse_args())
 
 if args.get("video", None) is None:
@@ -46,7 +46,7 @@ while True:
 
 	frameID += 1
 	# if the first frame is None, initialize it
-	if firstFrame is None:
+	if firstFrame is None or frameID % 10000 == 0:
 		firstFrame = gray
 		xl.append([frameID, 0])
 		continue
