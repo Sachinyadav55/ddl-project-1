@@ -32,7 +32,7 @@ pythonPath = os.path.join(os.environ['HOME'], 'anaconda3/bin/python')
 
 #Grid search for all the hyper parameters
 with open(os.path.join(parameters['root_path'], 'hyperparameterTuningLog.csv'), 'w') as f1: #For saving runtimes
-	f1.write('model,runtime')
+	f1.write('model,runtime\n')
 	for model in models:
 		for modelDepth in modelDepths:
 			for learning_rate in learning_rates:
@@ -64,11 +64,11 @@ with open(os.path.join(parameters['root_path'], 'hyperparameterTuningLog.csv'), 
 
 							log = results + ',' + str(t2 - t1)
 
-							f1.write(log)
+							f1.write(log+'\n')
 
 						except:
 							log = results + ',' + 'Failed'
 
-							f1.write(log)
+							f1.write(log+'\n')
 
 print('Done!')
