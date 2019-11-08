@@ -19,5 +19,7 @@ positional arguments:
 DirectoryofImages  Path of the folder containing the images
 
 optional arguments:
-  -h, --help         show this help message and exit
-  -v, --version      Show program's version number and exit.
+
+-h, --help         show this help message and exit
+
+-v, --version      Show program's version number and exit.
