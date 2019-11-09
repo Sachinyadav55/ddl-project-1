@@ -186,7 +186,7 @@ if __name__ == "__main__":
     pipeline.run()
 
     # the actual pipeline will be train -> execute
-    # pipeline.load() TODO
-    # pipeline.train() # this function should train all the PPs and UDFs TODO
-    # pipeline.execute() # this function should be query -> QO -> PP -> UDFs
+    pipeline.load() #TODO
+    pipeline.train() # this function should train all the PPs and UDFs TODO
+    pipeline.execute() # this function should be query -> QO -> PP -> UDFs
     # -> Output TODO
