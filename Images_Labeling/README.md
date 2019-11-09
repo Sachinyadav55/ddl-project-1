@@ -10,7 +10,7 @@ Must have python installed with the following modules : PyQt, os, subprocess, ar
 
 
 
-usage: python3 Label_Images.py /<Path of the folder containing the image Files/> 
+usage: python3 Label_Images.py "Path of the folder containing the image Files" 
   
 This program is used to Label positive/negative instances from the dataset
 
