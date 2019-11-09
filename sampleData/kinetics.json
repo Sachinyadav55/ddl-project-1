@@ -1,0 +1,1 @@
+{"labels": ["no_fish", "spit"], "database": {"Unannotated_2": {"subset": "training", "annotations": {"label": "no_fish"}}, "Unannotated_4": {"subset": "validation", "annotations": {"label": "no_fish"}}}}
