@@ -1,5 +1,5 @@
 opencv-python
 imutils
 torch
-torchvision==0.1.8
+torchvision
 
