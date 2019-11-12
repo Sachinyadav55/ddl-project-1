@@ -1,3 +1,7 @@
+We are trying to incorporate the faster R-CNN in the EVA
+
+EVA readme below
+
 ## EVA (Exploratory Video Analytics)
 
 [![Build Status](https://travis-ci.org/georgia-tech-db/Eva.svg?branch=master)](https://travis-ci.com/georgia-tech-db/Eva)
