@@ -1,5 +1,7 @@
 # 3D ResNets for Action Recognition
 
+Credit:https://github.com/kenshohara/3D-ResNets-PyTorch
+
 ## Update (2018/2/21)
 
 Our paper "Can Spatiotemporal 3D CNNs Retrace the History of 2D CNNs and ImageNet?" is accepted to CVPR2018!  
