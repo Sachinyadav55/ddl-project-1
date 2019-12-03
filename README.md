@@ -35,6 +35,8 @@ Once the dependencies are installed, the frames associated with motion can be ob
 ### Using 3d-CNN
 Please read the README.md for 3D-ResNets-PyTorch for implimentation of 3d-CNN
 
+Credit:https://github.com/kenshohara/3D-ResNets-PyTorch
+
 ### Hyperparameter Tuning
 
 Once the 3d-ResNet-PyTorch is tested, the statistics for hyperparameters can be obtained by following command
