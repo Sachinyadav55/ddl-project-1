@@ -2,4 +2,6 @@ opencv-python
 imutils
 torch
 torchvision
+Pillow==2.2.2
+sk-video
 

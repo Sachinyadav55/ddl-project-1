@@ -28,14 +28,23 @@ Once the dependencies are installed, the frames associated with motion can be ob
    
   This will create a CSV with the same name as video at the same location. The CSV should contain two columns of frameID and Include/Exclude boolean.
   
-### Using Noscope
-
-
 
 ### Using 3d-CNN
 Please read the README.md for 3D-ResNets-PyTorch for implimentation of 3d-CNN
 
-Credit:https://github.com/kenshohara/3D-ResNets-PyTorch
+Credits:https://github.com/kenshohara/3D-ResNets-PyTorch
+
+
+```bibtex
+@inproceedings{hara3dcnns,
+  author={Kensho Hara and Hirokatsu Kataoka and Yutaka Satoh},
+  title={Can Spatiotemporal 3D CNNs Retrace the History of 2D CNNs and ImageNet?},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={6546--6555},
+  year={2018},
+}
+```
+
 
 ### Hyperparameter Tuning
 
@@ -51,3 +60,22 @@ The script will generate "hyperparameterTuningLog.csv" for saving runtimes and "
 ### Fine tuning and testing pretrained models
 
 We have tweaked the final layer of pretrained model for video classification in PyTorch trained on Kinetic-400 dataset. Refer to "PyTorch_3dCNN-Testing.ipynb" for walk through.
+
+
+### Using main.py for video classification
+
+Make sure you have a GPU configured for training the model.
+
+### Running the script:
+
+
+```bash
+	python3 model.py
+```
+
+This will train the model with default metrics (refer the model.py) and generate results in directory containing saved model(s) and confusion matrix. To save the log information redirect the output to logFile.txt
+
+By default all GPUs is used for the training.
+If you want a part of GPUs, set devices using ```CUDA_VISIBLE_DEVICES=...```.
+
+Please go through the list of arguments which parser uses and set the arguments accordingly.
