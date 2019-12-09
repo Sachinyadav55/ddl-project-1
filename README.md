@@ -19,7 +19,9 @@ Make sure to install following dependencies before running the code
    ```
 
 #### For noscope:
-follow the installation instructions from here: https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
+Follow the installation instructions from here: https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
+
+More about it at https://github.com/VineethAljapur/ddl-project/tree/master/noscope
 ### Using OpenCV
 
 Once the dependencies are installed, the frames associated with motion can be obtained by using following command
