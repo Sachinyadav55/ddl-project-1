@@ -84,5 +84,5 @@ Please go through the list of arguments which parser uses and set the arguments 
 
 ### Using Difference Detector and Image Labeling Scripts
 
-Please refer to the README.md in the respective folders to run the script
+Please refer to the README.md in the respective folders to run the script.
 
