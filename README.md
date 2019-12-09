@@ -64,11 +64,6 @@ This will perform Grid search on the models, modelDepths, learning_rates, weight
 
 The script will generate "hyperparameterTuningLog.csv" for saving runtimes and "log.txt" for saving running logs for each iteration.
 
-### Fine tuning and testing pretrained models
-
-We have tweaked the final layer of pretrained model for video classification in PyTorch trained on Kinetic-400 dataset. Refer to "PyTorch_3dCNN-Testing.ipynb" for walk through.
-
-
 ### Using main.py for video classification
 
 Make sure you have a GPU configured for training the model.
