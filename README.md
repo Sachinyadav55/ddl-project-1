@@ -81,3 +81,8 @@ By default all GPUs is used for the training.
 If you want a part of GPUs, set devices using ```CUDA_VISIBLE_DEVICES=...```.
 
 Please go through the list of arguments which parser uses and set the arguments accordingly.
+
+### Using Difference Detector and Image Labeling Scripts
+
+Please refer to the README.md in the respective folders to run the script
+
