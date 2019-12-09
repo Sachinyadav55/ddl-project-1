@@ -52,6 +52,9 @@ Credits:https://github.com/kenshohara/3D-ResNets-PyTorch
 
 ### Hyperparameter Tuning
 
+clone https://github.com/kenshohara/3D-ResNets-PyTorch
+and place this file in that repository
+
 Once the 3d-ResNet-PyTorch is tested, the statistics for hyperparameters can be obtained by following command
 
 ```bash
