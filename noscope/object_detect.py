@@ -5,17 +5,12 @@ import sys
 import tensorflow as tf
 import pandas as pd
 import time
-
-# import deeplabcut
 import shutil
 import math
-
 import logging
 import glob
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
-logging.getLogger('tensorflow').setLevel(logging.FATAL)
-
+from utils import label_map_util
+from utils import visualization_utils as vis_util
 
 from distutils.version import StrictVersion
 from collections import defaultdict
@@ -24,41 +19,37 @@ from matplotlib import pyplot as plt
 from PIL import Image
 import cv2
 from tqdm import tqdm
+import argparse
+
+
+
+
+# Supress TensorFlow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
+logging.getLogger('tensorflow').setLevel(logging.FATAL)
+
 
 # This is needed since the notebook is stored in the object_detection folder.
+
 sys.path.append("..")
 from object_detection.utils import ops as utils_ops
 
 if StrictVersion(tf.__version__) < StrictVersion('1.12.0'):
   raise ImportError('Please upgrade your TensorFlow installation to v1.12.*.')
 
-colorclass=plt.cm.ScalarMappable(cmap='jet')
-C=colorclass.to_rgba(np.linspace(0,1,4))
-colors=(C[:,:3]*255).astype(np.uint8)
 
-col_part = {'Mouth':0, 'EyeR':1, 'EyeL':2,'Tail':3}
+root_dir = '' # select the root directory, it should have both label map as well the as the frozen checkpoint in it
+PATH_TO_FROZEN_GRAPH = os.path.join(root_dir, '/frozen_inference_graph.pb')
 
-
-
-from utils import label_map_util
-
-from utils import visualization_utils as vis_util
-
-path_config_file = '/data/home/marrojwala3/fall_2019/DLC/DLC1-JeanM-2019-06-13/config.yaml'
-
-PATH_TO_FROZEN_GRAPH = '/home/marrojwala3/objD_test/training_workspace/trained-inference-graphs/output_inference_graph_200k_all_trials_dlc' + '/frozen_inference_graph.pb'
-
-PATH_TO_LABELS = os.path.join('/home/marrojwala3/objD_test/training_workspace/training', 'label_map.pbtxt')
+PATH_TO_LABELS = os.path.join(root_dir, 'label_map.pbtxt')
 
 
 
-import argparse
-parser = argparse.ArgumentParser(description='This script is for inferencing images or videos')
+parser = argparse.ArgumentParser(description='This script is for inferencing videos to create dataset for training shallow neural nets')
 
 parser.add_argument('-M', action='store', dest='model',default = PATH_TO_FROZEN_GRAPH)
 parser.add_argument('-L', action='store', dest = 'parts_label',default = PATH_TO_LABELS)
 parser.add_argument('-V' ,action='store', dest = 'video')
-parser.add_argument('-C', action='store', dest = 'config',default = path_config_file)
 parser.add_argument('-A',action ='store_true',dest= 'analyze_all', default = False )
 parser.add_argument('-GPU_to_use', action = 'store',dest = 'gpus_2_use', default = "0")
 
@@ -67,13 +58,17 @@ results = parser.parse_args()
 print("Using GPU:" + results.gpus_2_use)
 
 
-# coords = list(pd.read_csv(results.videos+'/coords.xy'))
 video = results.video
 
+# Script to run the inference, reodered the nesting to avoid repeated allocation
+# of the same network on to the GPU which saves at least 3 seconds
 def run_inference_for_single_image(image, graph):
+
+    # Input:  takes the image (np.ndarray) and the tf_graph object containing the
+    #         neural network graph
+    # Output: Returns a dictionary with bouding boxes, their scores and rankings.
+    #         also give the number of predictions above the threshold
   with graph.as_default():
-    # with tf.Session() as sess:
-      # Get handles to input and output tensors
       ops = tf.get_default_graph().get_operations()
       all_tensor_names = {output.name for op in ops for output in op.outputs}
       tensor_dict = {}
@@ -116,6 +111,9 @@ def run_inference_for_single_image(image, graph):
         output_dict['detection_masks'] = output_dict['detection_masks'][0]
   return output_dict
 
+
+# Reading the serializing the models
+
 detection_graph = tf.Graph()
 with detection_graph.as_default():
   od_graph_def = tf.GraphDef()
@@ -124,21 +122,29 @@ with detection_graph.as_default():
     od_graph_def.ParseFromString(serialized_graph)
     tf.import_graph_def(od_graph_def, name='')
 
+
+# Setting which GPU to use
 os.environ["CUDA_VISIBLE_DEVICES"] = results.gpus_2_use
 config = tf.ConfigProto()
 config.gpu_options.allow_growth=True
 category_index = label_map_util.create_category_index_from_labelmap(results.parts_label, use_display_name=True)
+
+# loading the model on to the GPU
 with tf.Session(graph=detection_graph,config=config) as sess:
     print("Processing " + video + " now.\n")
+
+    # Reading the video from the directory
     cap = cv2.VideoCapture(video)
     nframes = int(cap.get(7))
+
+    # getting ready to pick 10,000 random frames
     np.random.seed(0)
     ind = list(np.random.permutation(np.arange(nframes))[:10000])
     np.random.seed(0)
     ind_rem = list(np.random.permutation(np.arange(nframes))[10000:])
 
-    fps =1 # int(round(cap.get(5)))
 
+    # Creating directories for the test and validation datasets
     if os.path.isdir(video.split(".")[0]):
         shutil.rmtree(video.split(".")[0])
     os.mkdir(video.split(".")[0])
@@ -152,11 +158,13 @@ with tf.Session(graph=detection_graph,config=config) as sess:
     counter = {'frame': [],
               'count': [],
               'boxes': []}
-
+    # in case if you want to run inference on the whole video
     if results.analyze_all:
         looper = ind_rem
     else:
         looper = ind
+
+    # let the inference begin!
     for i in tqdm(ind):
         cap.set(1,i)
 
@@ -164,49 +172,22 @@ with tf.Session(graph=detection_graph,config=config) as sess:
 
         if ret:
             image_np_expanded = np.expand_dims(image_np, axis=0)
+
+
           # Actual detection.
-
-
             output_dict = run_inference_for_single_image(image_np_expanded, detection_graph)
-          # Visualization of the results of a detection.
-    #               vis_util.visualize_boxes_and_labels_on_image_array(
-    #                   image_np,
-    #                   output_dict['detection_boxes'],
-    #                   output_dict['detection_classes'],
-    #                   output_dict['detection_scores'],
-    #                   category_index,
-    #                   instance_masks=output_dict.get('detection_masks'),
-    #                   use_normalized_coordinates=True,
-    #                   line_thickness=8)
-
-
             f_num=len(output_dict['detection_scores'][output_dict['detection_scores'] > 0.9])
 
+            # making dataset for binary classification
             if f_num == 0:
                 cv2.imwrite(video.split(".")[0] + "/temp/0/"+str(i)+".png",image_np )
             else:
                 cv2.imwrite(video.split(".")[0] + "/temp/1/"+str(i)+".png",image_np )
 
-            boxes = []
-            for k in output_dict['detection_boxes'][output_dict['detection_scores'] >0.9]:
 
-                for L in range(4):
-                    if i%2 ==0:
-                        k[L] = k[L]*image_np.shape[1]
-
-                    else:
-                        k[L] = k[L]*image_np.shape[0]
-                boxes.append(k)
-
-          # if i%9000 == 0:
-          #     plt.figure(figsize=IMAGE_SIZE)
-          #     plt.imsave(os.path.join(video.split(".")[0],str(i/1800)+".png"),image_np)
-          #     plt.close()
             counter['frame'].append(i)
             counter['count'].append(f_num)
-            counter['boxes'].append(boxes)
-
 
     p = pd.DataFrame.from_dict(counter).sort_values(by='frame')
 
-    p.to_hdf(video.split(".")[0]+"_prelim.h5", key = 'p',mode='w')
+    p.to_hdf(video.split(".")[0]+"h5", key = 'p',mode='w')
